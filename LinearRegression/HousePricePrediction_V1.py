@@ -45,7 +45,7 @@ def linear_regression():
     plt.ylabel('Predictions')
     plt.show()
     # R sqr
-    print linear_regression.score(X, y)
+    print (linear_regression.score(X, y))
     # print linear_regression.coef_
     performance_metric(y_test, predictions)
 
@@ -53,11 +53,11 @@ def linear_regression():
 def performance_metric(y_true, y_predict):
     """ Calculates and returns the performance score between
            true and predicted values based on the metric chosen. """
-    print y_true
-    print y_predict
+    print (y_true)
+    print(y_predict)
     from sklearn.metrics import r2_score
     score = r2_score(y_true, y_predict)
-    print 'performance - metric', score
+    print ('performance - metric', score)
 
 
 if __name__ == "__main__":
