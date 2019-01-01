@@ -3,7 +3,12 @@ from sklearn import tree
 from sklearn.metrics import accuracy_score
 import numpy as np
 import pandas as pd
+import graphviz
 
+
+'''
+AIM : To build a Decision Tree model for prediction of car quality given other attributes about the car.
+'''
 
 def decision_tree():
     # ------------------------------------load the data---------------------------------------
@@ -59,6 +64,7 @@ def decision_tree():
     pass
 
     scores_based_on_depth(X_train, X_test, y_train, y_test)
+    visualization(decision_tree, class_names, X)
 
 # -------------- scores based on depth of tree----------------------------------------
 
@@ -72,6 +78,13 @@ def scores_based_on_depth(X_train, X_test, y_train, y_test):
         y_predicted = decision_tree.predict(X_test)
         print(str(i) + '\t', decision_tree.score(X_train, y_train), '\t', accuracy_score(y_test, y_predicted))
 
+def visualization(decision_tree, class_names, X):
+    feature_names = X.columns
 
+    dot_data = tree.export_graphviz(decision_tree, out_file=None, filled=True, rounded=True,
+                                    feature_names=feature_names,
+                                    class_names=class_names)
+    graph = graphviz.Source(dot_data)
+    graph
 if __name__ == '__main__':
     decision_tree()
