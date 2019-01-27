@@ -26,7 +26,7 @@ def do_predictions_test_split(features, target):
     print('Mean Squared Error: ', mean_squared_error(y_test, y_predictions), '\n\n\n')
     print('accuracy - ', performance_metric(y_test, y_predictions))
 
-    features, target = load_data('datasets/test.csv')
+    features, target = load_data('datasets/test_car_data.csv') # changed file name, verify
     y_predictions = model.predict(features)
     print(target)
     print(y_predictions)
