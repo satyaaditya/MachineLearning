@@ -23,7 +23,7 @@ def use_kfold(independent_data, dependent_data):
     kf = KFold(n_splits=10)
     scores = cross_val_score(decision_tree, independent_data, dependent_data, cv=kf)
     print('kfold -')
-    print(scores)
+    print('accuracy - ', scores.mean())
 
 
 def decision_tree(data):
