@@ -1,12 +1,10 @@
 # we need to guess wheter the individuals from the test dataset had survived or not
 import copy
-from subprocess import check_call
 
 import graphviz
-from sklearn import tree
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
-from sklearn.model_selection import KFold
-from sklearn.model_selection import cross_val_score
+
 import pandas as pd
 import numpy as np
 
@@ -135,45 +133,27 @@ def gini_impurity(survived_count, total_count):
     return mislabelling_not_survival_prob + mislabelling_survival_prob
 
 
-def decision_tree(train_data, test_data):
-    tree_depth = len(list(test_data))
-    kfold = KFold(n_splits=10)
-    for depth in range(1, tree_depth + 1):
-        tree_classifier = tree.DecisionTreeClassifier(max_depth=depth)
-        valid_accuracy = []
-        for train_fold, validate_fold in kfold.split(train_data):
-            fold_train = train_data.loc[train_fold]
-            fold_val = train_data.loc[validate_fold]
-
-            model = tree_classifier.fit(fold_train.drop(['Survived'], axis=1), fold_train['Survived'])
-            valid_accuracy.append(model.score(X=fold_val.drop(['Survived'], axis=1), y=fold_val['Survived']))
-
-        avg = sum(valid_accuracy) / len(valid_accuracy)
-        print('depth - ', depth, 'mean_accuracy - ', avg)
-    print('max accuracy at depth 3')
-    return 3
-
-def final_tree(train, test, depth):
+def randomForest(train, test):
     y_train = train['Survived']
     x_train = train.drop(['Survived'], axis=1).values
     x_test = test.values
-    decision_tree = tree.DecisionTreeClassifier(max_depth=3)
-    decision_tree.fit(x_train, y_train)
-    y_predictions = decision_tree.predict(x_test)
+    y_test = test['Survived']
+    rf = RandomForestClassifier(criterion='gini',
+                                n_estimators=700,
+                                min_samples_split=10,
+                                min_samples_leaf=1,
+                                max_features='auto',
+                                oob_score=True,
+                                random_state=1,
+                                n_jobs=-1)
+    rf.fit(x_train, y_train)
+    predictions = rf.predict(x_test)
+    print("%.4f" % rf.oob_score_)
+# def random_forest
 
-    dot_data = tree.export_graphviz(decision_tree, max_depth=depth, feature_names=list(train.drop(['Survived'], axis=1)),
-                         class_names=['Survived', 'Died'],
-                         rounded = True,
-                         filled = True,
-                         impurity=True
-                         )
-
-    graph = graphviz.Source(dot_data)
-    graph
 if __name__ == '__main__':
     train_data, test_data = load_csv()
     original_train_data = copy.deepcopy(train_data)
     train_data, test_data = data_preproccessing(train_data, test_data)
     compare_features(train_data, test_data)
-    depth = decision_tree(train_data, test_data)
-    final_tree(train_data, test_data, depth)
+    randomForest(train_data, test_data)
