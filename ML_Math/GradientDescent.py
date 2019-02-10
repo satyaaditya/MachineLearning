@@ -19,6 +19,8 @@ def error_measure(b, m, data):
 
 
 def calculate_gradient_descent(data, b, m, learning_rate=0.0001):
+    """ derivative gives us the slope and this stub gives avg b, m. This method is being called over 1000 iterations
+    to get a minima """
     b_final = 0
     m_final = 0
     N = float(len(data[0]))
